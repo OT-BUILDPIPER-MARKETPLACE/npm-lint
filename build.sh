@@ -1,24 +1,33 @@
 #!/bin/bash
-source /opt/buildpiper/shell-functions/functions.sh
-source /opt/buildpiper/shell-functions/log-functions.sh
-source /opt/buildpiper/shell-functions/str-functions.sh
-source /opt/buildpiper/shell-functions/file-functions.sh
-source /opt/buildpiper/shell-functions/aws-functions.sh
 
-TASK_STATUS=0
+source functions.sh
+source log-functions.sh
+source str-functions.sh
+source file-functions.sh
+source aws-functions.sh
 
-CODEBASE_LOCATION="${WORKSPACE}"/"${CODEBASE_DIR}"
-logInfoMessage "I'll do processing at [$CODEBASE_LOCATION]"
-sleep  $SLEEP_DURATION
-cd  "${CODEBASE_LOCATION}"
+logInfoMessage "I'll lint the JS files available at [$WORKSPACE/$CODEBASE_DIR]"
 
-TASK_STATUS=0
+cd  $WORKSPACE/$CODEBASE_DIR
 
-if [condition]; then
-    logErrorMessage "Done the required operation"
+if [ -d "reports" ]; then
+    true
 else
-    TASK_STATUS=1
-    logErrorMessage "Target server not provided please check"
-
+    mkdir reports 
 fi
-saveTaskStatus ${TASK_STATUS} ${ACTIVITY_SUB_TASK_CODE}
+
+npm lint
+
+if [ $? -eq 0 ]
+then
+  logInfoMessage "Congratulations npm lint scan succeeded!!!"
+  generateOutput docker_lint true "Congratulations npm lint scan succeeded!!!"
+elif [ $VALIDATION_FAILURE_ACTION == "FAILURE" ]
+  then
+    logErrorMessage "Please check npm lint scan failed!!!"
+    generateOutput ${ACTIVITY_SUB_TASK_CODE} false "Please check npm lint scan failed!!!"
+    exit 1
+   else
+    logWarningMessage "Please check npm lint scan failed!!!"
+    generateOutput ${ACTIVITY_SUB_TASK_CODE} true "Please check npm lint scan failed!!!"
+fi
