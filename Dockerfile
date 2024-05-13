@@ -1,8 +1,11 @@
-FROM node:16.11-stretch-slim
+FROM node:16.11.0-buster
 
-RUN apk add --no-cache --upgrade bash
-RUN apk add jq
-RUN npm install -g npm@9
+RUN apt-get update -y
+RUN apt-get install jq -y
+
+WORKDIR /src/
+RUN npm update
+RUN npm install -g jshint
 
 COPY build.sh .
 COPY BP-BASE-SHELL-STEPS .
@@ -10,6 +13,5 @@ COPY BP-BASE-SHELL-STEPS .
 ENV ACTIVITY_SUB_TASK_CODE BP-DOCKER-LINTER
 ENV SLEEP_DURATION 5s
 ENV VALIDATION_FAILURE_ACTION WARNING
-ENV DOCKERFILE_PATH "Dockerfile"
 
 ENTRYPOINT [ "./build.sh" ]

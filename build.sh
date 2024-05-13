@@ -16,18 +16,18 @@ else
     mkdir reports 
 fi
 
-npm lint
+jshint --extract always .
 
 if [ $? -eq 0 ]
 then
-  logInfoMessage "Congratulations npm lint scan succeeded!!!"
-  generateOutput docker_lint true "Congratulations npm lint scan succeeded!!!"
+  logInfoMessage "Congratulations js lint scan succeeded!!!"
+  generateOutput docker_lint true "Congratulations js lint scan succeeded!!!"
 elif [ $VALIDATION_FAILURE_ACTION == "FAILURE" ]
   then
     logErrorMessage "Please check npm lint scan failed!!!"
-    generateOutput ${ACTIVITY_SUB_TASK_CODE} false "Please check npm lint scan failed!!!"
+    generateOutput ${ACTIVITY_SUB_TASK_CODE} false "Please check js lint scan failed with warnings!!!"
     exit 1
    else
     logWarningMessage "Please check npm lint scan failed!!!"
-    generateOutput ${ACTIVITY_SUB_TASK_CODE} true "Please check npm lint scan failed!!!"
+    generateOutput ${ACTIVITY_SUB_TASK_CODE} true "Please check js lint scan failed with warnings!!!"
 fi
