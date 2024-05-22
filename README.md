@@ -18,5 +18,5 @@ docker run -it --rm -v $PWD:/src -e var1="key1" -e var2="key2" ot/<image-name>:0
 
 * Debug
 ```
-docker run -it --rm -v $PWD:/src -e var1="key1" -e var2="key2" --entrypoint sh ot/<image-name>:0.1
+docker run -it --rm -v $PWD:/src -e WORKSPACE=/src -e INSTRUCTION="run test" --entrypoint sh registry.buildpiper.in/npm:v0.1-wm
 ```
